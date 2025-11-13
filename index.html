@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>College Exam Portal | Secure Test</title>
+    <style>
+        /* Color Palette: Blue (Trust), Cyan (Accent), Dark Gray (Text), Red (Alert) */
+        :root {
+            --primary-color: #0056b3; /* Slightly brighter, professional Blue */
+            --accent-color: #00bcd4; /* Cyan/Turquoise for high-contrast elements */
+            --secondary-color: #f8f9fa; /* Very Light Background */
+            --border-color: #e9ecef;
+            --alert-color: #dc3545; /* Standard Red */
+            --success-color: #28a745; /* Standard Green */
+            --text-color: #343a40;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --font-family: 'Segoe UI', 'Inter', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        /* --- General Layout --- */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: var(--shadow-medium);
+            border-radius: 12px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        .logo span {
+            font-size: 0.6em;
+            font-weight: 300;
+            margin-left: 10px;
+            padding: 2px 6px;
+            background-color: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        header .status-info {
+            font-size: 1em;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 6px;
+        }
+
+        /* --- Student Portal Specific --- */
+        .exam-layout {
+            display: flex;
+            gap: 30px;
+            padding-top: 30px;
+        }
+
+        .proctoring-panel {
+            width: 320px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+            /* Highlight the monitoring aspect */
+            border-left: 5px solid var(--alert-color);
+        }
+
+        .proctoring-panel h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        #webcam-feed {
+            width: 100%;
+            height: auto;
+            border: 3px solid var(--primary-color);
+            border-radius: 6px;
+            display: block;
+        }
+
+        .exam-content {
+            flex-grow: 1;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        .exam-content h2 {
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        /* Question and Answer Form Styling */
+        .question-box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            background-color: var(--secondary-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-box p {
+            font-size: 1.2em;
+            font-weight: 500;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        #answer-form label {
+            display: block;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        #answer-form label:hover {
+            background-color: #eef5ff;
+            border-color: var(--primary-color);
+        }
+        
+        #answer-form input[type="radio"]:checked + span {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        #answer-form input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        /* Buttons */
+        .action-button {
+            padding: 12px 25px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 500;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        #next-q-btn {
+            background-color: var(--primary-color);
+        }
+        
+        #next-q-btn:hover {
+            background-color: #00428a;
+            transform: translateY(-1px);
+        }
+
+        #end-exam-btn {
+            background-color: var(--alert-color);
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            border: 1px solid #b30000;
+        }
+
+        #end-exam-btn:hover {
+            background-color: #a00000;
+        }
+
+        #feedback {
+            margin-left: 20px;
+            color: var(--alert-color);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            College Exam Portal <span>SECURE</span>
+        </div>
+        <div class="status-info">
+            <p style="margin: 0;">Student ID: <strong>{{ student_id }}</strong> | Q: <span id="q-counter">1</span> / {{ total_questions }}</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="exam-layout">
+            
+            <!-- A. Proctoring Panel (Left Sidebar) -->
+            <div class="proctoring-panel">
+                <h3>Live Proctoring Status</h3>
+                <img id="webcam-feed" src="{{ url_for('video_feed', student_id=student_id) }}">
+                <p style="margin-top: 20px; font-size: 0.9em; color: var(--text-color);">
+                    <strong style="color: var(--alert-color);">⚠️ WARNING:</strong> Your session is monitored. Any suspicious activity will lead to immediate submission.
+                </p>
+                <button id="end-exam-btn" class="action-button">End Exam & Submit</button>
+            </div>
+
+            <!-- B. Exam Content Area (Dynamic) -->
+            <div class="exam-content">
+                <h2>Module 1: Computer Science Fundamentals</h2>
+                <div id="question-area">
+                    <p>Loading question...</p>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; align-items: center;">
+                    <button id="next-q-btn" class="action-button">Save & Next Question</button>
+                    <span id="feedback"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const STUDENT_ID = "{{ student_id }}";
+        let currentQuestion = null;
+
+        // --- Core Dynamic Functions ---
+
+        async function loadQuestion() {
+            const response = await fetch(`/api/get_question/${STUDENT_ID}`);
+            const data = await response.json();
+
+            const qArea = document.getElementById('question-area');
+            const nextBtn = document.getElementById('next-q-btn');
+
+            if (data.finished) {
+                qArea.innerHTML = '<h3>Exam Finished! Thank you for your submission.</h3>';
+                nextBtn.style.display = 'none';
+                return;
+            }
+
+            currentQuestion = data;
+            document.getElementById('q-counter').textContent = data.q_number;
+            nextBtn.textContent = (data.q_number == {{ total_questions }}) ? 'Submit Exam' : 'Save & Next Question';
+
+            // HTML for question rendering
+            let html = `<div class="question-box">
+                        <p>${data.text}</p>
+                        </div>
+                        <form id="answer-form">`;
+            
+            for (const [key, value] of Object.entries(data.options)) {
+                // Modified label structure for better styling
+                html += `<label>
+                            <input type="radio" name="q_option" value="${key}"> <span>${key}) ${value}</span>
+                         </label>`;
+            }
+            html += '</form>';
+            qArea.innerHTML = html;
+        }
+
+        async function submitAnswer() {
+            const form = document.getElementById('answer-form');
+            const selected = form ? form.querySelector('input[name="q_option"]:checked') : null;
+            const feedback = document.getElementById('feedback');
+
+            if (!selected && currentQuestion) {
+                feedback.textContent = 'Please select an option.';
+                return;
+            }
+            
+            feedback.textContent = 'Submitting...';
+            const response = await fetch(`/api/submit_answer/${STUDENT_ID}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ selected_option: selected ? selected.value : null })
+            });
+
+            const data = await response.json();
+            
+            if (data.success && data.finished) {
+                feedback.textContent = 'Exam submitted successfully! Redirecting...';
+                // In a real app, this would redirect to a results page
+                setTimeout(() => window.location.reload(), 1500); 
+            } else if (data.success) {
+                feedback.textContent = 'Answer saved. Loading next question.';
+                loadQuestion();
+            } else {
+                 feedback.textContent = 'Error during submission.';
+            }
+        }
+        
+        // --- Event Listeners ---
+        document.getElementById('next-q-btn').addEventListener('click', submitAnswer);
+        document.getElementById('end-exam-btn').addEventListener('click', () => {
+             if (confirm("Are you sure you want to end and submit your exam? You cannot re-enter.")) {
+                 // Reuse submit function, which will handle the final question submission
+                 submitAnswer(); 
+             }
+        });
+
+        // --- Start Exam ---
+        loadQuestion();
+
+
+        // --- Existing Proctoring JS (No Change) ---
+        function logBrowserEvent(eventType, details = '') {
+            fetch('/log_browser_event', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ student_id: STUDENT_ID, event_type: eventType, details: details })
+            }).then(response => response.json());
+        }
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                logBrowserEvent('tab_switch', 'Window/Tab lost focus.');
+            }
+        });
+        
+        document.addEventListener('copy', () => { logBrowserEvent('copy', 'Content copied from page.'); });
+        document.addEventListener('paste', () => { logBrowserEvent('paste', 'Content pasted into page.'); });
+    </script>
+</body>
+</html>

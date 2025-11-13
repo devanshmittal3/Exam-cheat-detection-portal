@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exam Results | Submission Successful</title>
+    <style>
+        /* Color Palette: Blue (Primary), Cyan (Accent), Dark Gray (Text), Red (Alert), Green (Success) */
+        :root {
+            --primary-color: #0056b3; /* Professional Blue */
+            --accent-color: #00bcd4; /* Cyan/Turquoise */
+            --secondary-color: #f8f9fa; /* Very Light Background */
+            --border-color: #e9ecef;
+            --alert-color: #dc3545; /* Standard Red */
+            --success-color: #28a745; /* Standard Green */
+            --text-color: #343a40;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 8px 16px rgba(0, 0, 0, 0.15); /* Stronger shadow for the main box */
+            --font-family: 'Segoe UI', 'Inter', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        /* --- General Layout --- */
+        .container {
+            max-width: 800px; /* Narrower for better focus on results */
+            margin: 50px auto;
+            padding: 0; /* Remove padding from container to let result-box handle it */
+            background-color: transparent;
+            box-shadow: none;
+            border-radius: 12px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 600;
+        }
+
+        /* --- Result Page Specific --- */
+        .result-box {
+            /* Changed to a cleaner, professional success/info color scheme */
+            background-color: #e6f7ff; /* Very light primary-color tone */
+            border: 3px solid var(--primary-color);
+            padding: 40px;
+            border-radius: 0 0 12px 12px;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .result-box h2 {
+            color: var(--success-color);
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .result-box hr {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), var(--border-color), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        .score-display {
+            font-size: 4em;
+            color: var(--primary-color);
+            margin: 30px 0;
+            font-weight: 800;
+            padding: 15px 30px;
+            background-color: white;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Forced End Status */
+        .status-ended {
+            color: var(--alert-color);
+            font-weight: 700;
+            font-size: 1.4em;
+            background-color: #fcebeb; /* Very light red background */
+            border: 1px solid var(--alert-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        /* Footer Text */
+        .final-verification-note {
+            font-size: 1em; 
+            color: #6c757d; /* Darker gray for subtle text */
+            margin-top: 30px;
+        }
+
+        /* Close Button */
+        .close-btn {
+            margin-top: 30px; 
+            display: inline-block; 
+            padding: 12px 30px; 
+            background-color: var(--primary-color); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        .close-btn:hover {
+            background-color: #00428a;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>College Exam Portal</h1>
+        <div>
+            <p style="margin: 0;">Submission Complete</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="result-box">
+            <h2 style="color: var(--success-color);">Exam Submission Successful!</h2>
+            <p style="font-size: 1.1em; margin-bottom: 25px;">Thank you for completing the *College Exam Portal* test.</p>
+            <hr>
+
+            {% if user.status == 'force_ended' %}
+                <p class="status-ended">
+                    **CRITICAL NOTICE:** Your session was **FORCEFULLY ENDED** by the proctor due to a violation. Your provisional result is final.
+                </p>
+            {% else %}
+                <p style="font-size: 1.1em; font-weight: 500;">Your provisional results are displayed below:</p>
+            {% endif %}
+
+            <div class="score-display">
+                {{ user.score }} / {{ user.answers | length }}
+            </div>
+            
+            <p class="final-verification-note">
+                Final scores will be verified, subject to proctor review, and officially released by your institution.
+            </p>
+            
+            <a href="javascript:window.close();" class="close-btn">
+                Close Portal
+            </a>
+        </div>
+    </div>
+</body>
+</html>

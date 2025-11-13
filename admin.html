@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Proctoring Management System</title>
+    <style>
+        /* Color Palette: Blue (Primary), Cyan (Accent), Dark Gray (Text), Red (Alert), Orange (Warning) */
+        :root {
+            --primary-color: #0056b3; /* Professional Blue */
+            --accent-color: #00bcd4; /* Cyan/Turquoise */
+            --secondary-color: #f4f7f9; /* Light Grayish-Blue Background */
+            --border-color: #e9ecef;
+            --alert-color: #dc3545; /* Standard Red */
+            --warning-color: #ffc107; /* Standard Orange */
+            --success-color: #28a745; /* Standard Green */
+            --text-color: #343a40;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --font-family: 'Segoe UI', 'Inter', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        /* --- General Layout --- */
+        .container {
+            max-width: 1300px; /* Wider container for monitoring */
+            margin: 30px auto;
+            padding: 30px;
+            background-color: white;
+            box-shadow: var(--shadow-medium);
+            border-radius: 12px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+            font-weight: 600;
+        }
+        
+        header .student-info {
+            font-size: 1.1em;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 6px;
+        }
+
+        /* --- Admin Dashboard Specific --- */
+        .admin-dashboard {
+            display: flex;
+            gap: 30px;
+            padding-top: 20px;
+        }
+
+        .admin-feed {
+            width: 550px; /* Slightly wider video area */
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .admin-feed h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        #video_stream {
+            width: 100%;
+            height: auto;
+            border: 5px solid var(--primary-color); 
+            border-radius: 8px;
+            display: block;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Emphasize the video */
+        }
+        
+        #warning-message {
+            width: 100%; 
+            padding: 10px; 
+            margin-bottom: 15px; 
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+        
+        .admin-actions {
+            display: flex; 
+            justify-content: space-between;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        #send-warning-btn {
+            background-color: var(--warning-color); 
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        
+        #send-warning-btn:hover {
+            background-color: #e6b300;
+        }
+
+        #end-session-btn {
+            background-color: var(--alert-color); 
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        #end-session-btn:hover {
+            background-color: #b30000;
+        }
+        
+        #admin-feedback {
+            margin-top: 15px; 
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 5px 0;
+        }
+
+        /* B. Real-time Log Panel */
+        .admin-log-panel {
+            flex-grow: 1;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .admin-log-panel h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .log-container {
+            height: 450px; /* Increased height for better log view */
+            overflow-y: scroll;
+            border: 1px solid var(--border-color);
+            background-color: #fcfcfc;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.85em;
+        }
+
+        .log-entry {
+            margin-bottom: 7px;
+            padding: 5px 0;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        /* Log Levels with clear colors */
+        .CRITICAL { 
+            color: var(--alert-color); 
+            font-weight: bold; 
+            background-color: #f8d7da; /* Light red background for highlight */
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .WARNING { 
+            color: #d89b00; /* Darker orange for readability */
+            font-weight: bold; 
+        }
+        .INFO { 
+            color: var(--success-color); 
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Proctoring Management Dashboard</h1>
+        <div class="student-info">
+            <p style="margin: 0;">Monitoring Student: <strong>{{ student_data.student_id }}</strong></p>
+        </div>
+    </header>
+
+    <div class="container admin-dashboard">
+        
+        <!-- A. Live Video Feed Panel -->
+        <div class="admin-feed">
+            <h3>Live Video Feed</h3>
+            <img id="video_stream" 
+                 src="{{ url_for('video_feed', student_id=student_data.student_id) }}" 
+                 width="500" height="375">
+            
+            <div style="margin-top: 20px;">
+                <input type="text" id="warning-message" placeholder="Type a specific warning message...">
+            </div>
+            
+            <div class="admin-actions">
+                <button id="send-warning-btn" class="action-btn">SEND WARNING</button>
+                <button id="end-session-btn" class="action-btn">END SESSION</button>
+            </div>
+            <p id="admin-feedback"></p>
+        </div>
+
+        <!-- B. Real-time Log Panel -->
+        <div class="admin-log-panel">
+            <h3>Real-time Activity Log</h3>
+            <div id="log_display" class="log-container">
+                <p>Establishing connection to log server...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STUDENT_ID = "{{ student_data.student_id }}";
+
+        // --- Admin Button Functions ---
+        async function sendAdminAction(endpoint, actionName) {
+            const feedback = document.getElementById('admin-feedback');
+            feedback.textContent = `Sending ${actionName}...`;
+            
+            let message = '';
+            if (actionName === 'Warning') {
+                message = document.getElementById('warning-message').value || 'General warning sent by proctor.';
+            }
+            
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                feedback.textContent = `${actionName} successful. Logged in activity stream.`;
+            } else {
+                feedback.textContent = `Error during ${actionName}.`;
+            }
+            // Clear message input after sending a warning
+            if (actionName === 'Warning') {
+                 document.getElementById('warning-message').value = '';
+            }
+        }
+
+        document.getElementById('send-warning-btn').addEventListener('click', () => {
+            sendAdminAction(`/api/admin/send_warning/${STUDENT_ID}`, 'Warning');
+        });
+
+        document.getElementById('end-session-btn').addEventListener('click', () => {
+            if (confirm("CRITICAL: Are you sure you want to FORCEFULLY END this student's exam session?")) {
+                sendAdminAction(`/api/admin/end_session/${STUDENT_ID}`, 'Session End');
+            }
+        });
+
+        // --- Existing Log Fetching (No Change) ---
+        async function fetchLogs() {
+            try {
+                const response = await fetch(`/get_latest_logs/${STUDENT_ID}`);
+                const logs = await response.json();
+
+                // Include the new 'admin_actions' log type
+                const combinedLogs = [
+                    ...logs.video_warnings.map(l => ({...l, source: 'CAMERA', level: l.level || 'WARNING'})), /* Added default level */
+                    ...logs.browser_events.map(l => ({...l, source: 'BROWSER', level: l.level || 'INFO'})), /* Added default level */
+                    ...logs.admin_actions.map(l => ({...l, source: 'ADMIN', level: l.level || 'INFO'})) /* Added default level */
+                ].sort((a, b) => (a.time > b.time) ? 1 : -1);
+
+                const logDisplay = document.getElementById('log_display');
+                logDisplay.innerHTML = ''; 
+
+                combinedLogs.forEach(log => {
+                    const logEntry = document.createElement('div');
+                    // Ensure the level is uppercase for the class (e.g., 'INFO', 'WARNING', 'CRITICAL')
+                    const levelClass = log.level.toUpperCase(); 
+                    logEntry.classList.add('log-entry');
+                    logEntry.innerHTML = `
+                        <span class="${levelClass}">[${log.time}] [${log.source}] [${log.level}]</span>: ${log.message}
+                    `;
+                    logDisplay.appendChild(logEntry);
+                });
+                
+                logDisplay.scrollTop = logDisplay.scrollHeight;
+
+            } catch (error) {
+                // If this fails, the server is likely down or the student ID is wrong
+            }
+        }
+
+        fetchLogs();
+        setInterval(fetchLogs, 2000); 
+    </script>
+</body>
+</html>
